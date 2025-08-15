@@ -1,3 +1,9 @@
+#include <zephyr/sys/printk.h>
+#include <zephyr/sys/byteorder.h>
+
+#include <zephyr/bluetooth/bluetooth.h>
+#include "../ui/vars.h"
+
 #include "advertisement.h"
 
 #define BT_LE_AD_ONLY_GENERAL 0x06
@@ -28,14 +34,14 @@ static const struct bt_data sd[] = {
 
 uint16_t get_temp_ticks(double temp)
 {
-	uint16_t ticks = (double)(temp + 45) * 0xFFFF / 175.0;
-	return ticks;
+  uint16_t ticks = (double)(temp + 45) * 0xFFFF / 175.0;
+  return ticks;
 }
 
 uint16_t get_humi_ticks(double humi)
 {
-	uint16_t ticks = (double)(humi) * 0xFFFF / 100.0;
-	return ticks;
+  uint16_t ticks = (double)(humi) * 0xFFFF / 100.0;
+  return ticks;
 }
 
 void bt_ready(int ret)
@@ -49,14 +55,17 @@ void bt_ready(int ret)
   printk("Bluetooth initialized\n");
 
   // Start advertising with 1s interval
-  ret = bt_le_adv_start(BT_LE_ADV_PARAM(BT_LE_ADV_OPT_USE_IDENTITY, BT_GAP_ADV_SLOW_INT_MIN, 
-                        BT_GAP_ADV_SLOW_INT_MAX, NULL), ad, ARRAY_SIZE(ad), sd, ARRAY_SIZE(sd));
+  ret = bt_le_adv_start(BT_LE_ADV_PARAM(BT_LE_ADV_OPT_USE_IDENTITY, BT_GAP_ADV_SLOW_INT_MIN,
+                                        BT_GAP_ADV_SLOW_INT_MAX, NULL),
+                        ad, ARRAY_SIZE(ad), sd, ARRAY_SIZE(sd));
 
-  if (ret)
+  if (ret < 0)
   {
     printk("Advertising failed to start (ret %d)\n", ret);
     return;
   }
+
+  printk("Advertising started...\n");
 }
 
 void update_adv_data(uint16_t company_id, uint8_t s_advt, uint8_t s_type,
@@ -96,10 +105,9 @@ void advertising_start(void)
 void advertising_update(void)
 {
   uint16_t sample_data[3] = {
-    get_temp_ticks(get_var_temp_val()), 
-    get_humi_ticks(get_var_humi_val()), 
-    get_var_co2_val()
-  };
+      get_temp_ticks(get_var_temp_val()),
+      get_humi_ticks(get_var_humi_val()),
+      get_var_co2_val()};
 
   update_adv_data(COMPANY_ID, S_ADVT, S_TYPE, DEVICE_ID, sample_data, ARRAY_SIZE(sample_data), data_buf);
 }

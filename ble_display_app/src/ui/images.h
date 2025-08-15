@@ -7,10 +7,10 @@
 extern "C" {
 #endif
 
-extern const lv_img_dsc_t img_sensi_humi;
-extern const lv_img_dsc_t img_sensi_co2;
-extern const lv_img_dsc_t img_sensi_temp;
-extern const lv_img_dsc_t img_sensi_logo;
+extern const lv_img_dsc_t img_img_sensi_logo;
+extern const lv_img_dsc_t img_img_sensi_temp;
+extern const lv_img_dsc_t img_img_sensi_humi;
+extern const lv_img_dsc_t img_img_sensi_co2;
 
 #ifndef EXT_IMG_DESC_T
 #define EXT_IMG_DESC_T

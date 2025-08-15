@@ -1,12 +1,6 @@
 #ifndef ADVERTISEMENT_H
 #define ADVERTISEMENT_H
 
-#include <zephyr/sys/printk.h>
-#include <zephyr/sys/byteorder.h>
-
-#include <zephyr/bluetooth/bluetooth.h>
-#include "../ui/vars.h"
-
 uint16_t get_temp_ticks(double temp);
 uint16_t get_humi_ticks(double humi);
 void bt_ready(int ret);

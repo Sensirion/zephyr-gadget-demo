@@ -4,7 +4,7 @@
 	aliases {
 		led0 = &led0;
 		co2 = &scd4x;
-    rht = &sht4x;
+		rht = &sht4x;
 	};
 
 	chosen {
@@ -46,14 +46,14 @@
 			gamma = <0x01>;
 			colmod = <0x55>;
 			lcm = <0x0c>;
-			porch-param = [0c 0c 00 33 33];
-			cmd2en-param = [5a 69 02 01];
-			pwctrl1-param = [a4 a1];
-			pvgam-param = [d0 00 02 07 0a 28 32 44 42 06 0e 12 14 17];
-			nvgam-param = [d0 00 02 07 0a 28 31 54 47 0e 1c 17 1b 1e];
-			ram-param = [00 E0];
-			rgb-param = [CD 08 14];
-			mipi-mode = <MIPI_DBI_MODE_SPI_4WIRE>;
+			porch-param = [ 0c 0c 00 33 33  ];
+			cmd2en-param = [ 5a 69 02 01  ];
+			pwctrl1-param = [ a4 a1  ];
+			pvgam-param = [ d0 00 02 07 0a 28 32 44 42 06 0e 12 14 17  ];
+			nvgam-param = [ d0 00 02 07 0a 28 31 54 47 0e 1c 17 1b 1e  ];
+			ram-param = [ 00 E0  ];
+			rgb-param = [ CD 08 14  ];
+			mipi-mode = "MIPI_DBI_MODE_SPI_4WIRE";
 		};
 	};
 };
@@ -62,7 +62,7 @@
 	spim3_default: spim3_default {
 		group1 {
 			pinmux = <SPIM3_SCLK_GPIO18>,
-				 <SPIM3_CSEL_GPIO5>;
+					 <SPIM3_CSEL_GPIO5>;
 		};
 		group2 {
 			pinmux = <SPIM3_MOSI_GPIO19>;
@@ -75,14 +75,15 @@
 	status = "okay";
 	scd4x: scd4x@62 {
 		status = "okay";
-		compatible = "sensirion,scd40";
+		compatible = "sensirion,scd41";
 		reg = <0x62>;
+		mode = <0>;
 	};
 
-  sht4x: sht4x@44 {
-    status = "okay";
+	sht4x: sht4x@44 {
+		status = "okay";
 		compatible = "sensirion,sht4x";
 		reg = <0x44>;
 		repeatability = <2>;
-  };
+	};
 };

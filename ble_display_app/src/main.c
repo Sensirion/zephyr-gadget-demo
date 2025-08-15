@@ -1,48 +1,38 @@
+#include <zephyr/kernel.h>
+#include <zephyr/logging/log.h>
+#include <zephyr/sys/printk.h>
+
 #include "threads/threads.h"
 #include "advertisement/advertisement.h"
+
+#if !DT_NODE_EXISTS(DT_ALIAS(co2))
+#error "co2 alias not found in device tree"
+#endif
+
+#if !DT_NODE_EXISTS(DT_ALIAS(rht))
+#error "rht alias not found in device tree"
+#endif
 
 LOG_MODULE_REGISTER(app);
 
 K_THREAD_DEFINE(scd_id, STACKSIZE_DEFAULT, scd, NULL, NULL, NULL,
-								PRIORITY, 0, 0);
+				PRIORITY, 0, 500);
 K_THREAD_DEFINE(sht_id, STACKSIZE_DEFAULT, sht, NULL, NULL, NULL,
-								PRIORITY, 0, 0);
+				PRIORITY, 0, 500);
 K_THREAD_DEFINE(display_id, STACKSIZE_DISPLAY, display, NULL, NULL, NULL,
-								PRIORITY, 0, 0);
+				PRIORITY, 0, 3000);
 
 int main(void)
 {
-	if (!gpio_is_ready_dt(&led))
-	{
-		LOG_ERR("Backlight not ready");
-		return 0;
-	}
-	if (!gpio_is_ready_dt(&button))
-	{
-		LOG_ERR("Error: button device %s is not ready\n",
-					 button.port->name);
-		return 0;
-	}
-	if (!device_is_ready(display_dev))
-	{
-		LOG_ERR("Display not ready");
-		return 0;
-	}
-	if (!device_is_ready(sen_scd))
-	{
-		LOG_ERR("Device %s is not ready.\n", sen_scd->name);
-		return 0;
-	}
-	if (!device_is_ready(sen_sht))
-	{
-		LOG_ERR("Device %s is not ready.\n", sen_sht->name);
-		return 0;
-	}
+	printk("Starting application...\n");
 
+	const struct device *i2c_dev = DEVICE_DT_GET(DT_NODELABEL(i2c0)); // Adjust based on your I2C bus
+	if (!device_is_ready(i2c_dev))
+	{
+		printk("I2C bus not ready!\n");
+		return -ENODEV;
+	}
 	advertising_start();
 
-	// Start threads after initialization
-	k_thread_start(display_id);
-	k_thread_start(scd_id);
-	k_thread_start(sht_id);
+	return 0;
 }
